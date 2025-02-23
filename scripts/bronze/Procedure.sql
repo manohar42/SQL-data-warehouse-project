@@ -3,8 +3,13 @@
 CREATE OR REPLACE PROCEDURE bronze.load_bronze()
 LANGUAGE plpgsql
 AS $$
-BEGIN
+DECLARE 
+	Start_time BIGINT;
+	End_Time BIGINT;
+	duration BIGINT;
 	
+BEGIN
+	start_time := EXTRACT(EPOCH FROM now()) * 100000;
 	RAISE NOTICE'=======================================';
 	RAISE NOTICE 'Loading data into the bronze layer';
 	RAISE NOTICE'=======================================';
@@ -33,6 +38,14 @@ BEGIN
         'COPY bronze.crm_sales_details FROM %L WITH (FORMAT CSV, HEADER, DELIMITER '','')',
         'C:/Program Files/PostgreSQL/14/data/sales_details.csv'
     );
+	
+	end_time := EXTRACT(EPOCH FROM now()) * 100000;
+	duration := end_time - start_time;
+	RAISE NOTICE 'Start time is %',start_time;
+	RAISE NOTICE 'End time is %',end_time;
+	RAISE NOTICE 'Time Taken to load CRP tables is %',duration;
+	
+	start_time := EXTRACT(EPOCH FROM now()) * 10000000;
 	RAISE NOTICE '---------------------------------------';
 	RAISE NOTICE 'Loading ERP Tables';
 	RAISE NOTICE '---------------------------------------';
@@ -56,8 +69,12 @@ BEGIN
         'COPY bronze.erp_px_cat_g1v2 FROM %L WITH (FORMAT CSV, HEADER, DELIMITER '','')',
         'C:/Program Files/PostgreSQL/14/data/PX_CAT_G1V2.csv'
     );
+	end_time := EXTRACT(EPOCH FROM now()) * 10000000;
+	duration := end_time - start_time;
+	RAISE NOTICE 'Start time is %',start_time;
+	RAISE NOTICE 'End time is %',end_time;
+	RAISE NOTICE 'Time Taken to load CRP tables is %',duration;
 
 END $$;
-
 
 -- CALL bronze.load_bronze();
