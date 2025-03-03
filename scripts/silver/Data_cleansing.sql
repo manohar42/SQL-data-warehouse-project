@@ -1,5 +1,8 @@
 
 -- Data Normalization or standardization
+-- Removed Duplicates
+-- Added more value to the data
+  
 Truncate table silver.crm_cust_info;
 Insert into silver.crm_cust_info(cst_id,cst_key,
 cst_firstname,
